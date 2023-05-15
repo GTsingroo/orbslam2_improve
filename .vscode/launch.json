@@ -4,13 +4,15 @@
     // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+    
+
         {
             "name": "(gdb) 启动",
             "type": "cppdbg",
             "request": "launch",
             "program": "/home/tsingroo/Documents/orb-slam2/ORB_SLAM2_detailed_comments/Examples/Monocular/mono_tum",
             "args": [
-            " /home/tsingroo/Documents/orb-slam2/ORB_SLAM2_detailed_comments/Vocabulary/ORBvoc.txt",
+            "/home/tsingroo/Documents/orb-slam2/ORB_SLAM2_detailed_comments/Vocabulary/ORBvoc.txt",
             "/home/tsingroo/Documents/orb-slam2/ORB_SLAM2_detailed_comments/Examples/Monocular/TUM1.yaml",
             "/home/tsingroo/Documents/orb-slam2/ORB_SLAM2_detailed_comments/Dataset/TUM/rgbd_dataset_freiburg1_desk"
             ], /* 程序调试时传递给程序的命令行参数，一般设为空即可  */
