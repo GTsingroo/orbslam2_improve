@@ -563,7 +563,7 @@ ORBextractor::ORBextractor(int _nfeatures,		//指定要提取的特征点数目
 	//同时这些随机采样的特征点集也不能够满足旋转之后的采样不变性了）
 	for (v = HALF_PATCH_SIZE, v0 = 0; v >= vmin; --v)
     {
-        while (umax[v0] == umax[v0 + 1])
+        while (umax[v0] == umax[v0 + 1]) //cvRound四舍五入，当v是0~vmax，假设v=3或者4，对应的umax[v]=1，通过对称性保证
             ++v0;
         umax[v] = v0;
         ++v0;
@@ -1668,7 +1668,8 @@ void ORBextractor::ComputePyramid(cv::Mat image)
 		// 定义了两个变量：temp是扩展了边界的图像，masktemp并未使用
         Mat temp(wholeSize, image.type()), masktemp;
         // mvImagePyramid 刚开始时是个空的vector<Mat>
-		// 把图像金字塔该图层的图像指针mvImagePyramid指向temp的中间部分（这里为浅拷贝，内存相同）
+        // resize的时候mvImagePyramid指向temp的中间部分;最后保存的是指向temp
+        // 把图像金字塔该图层的图像指针mvImagePyramid指向temp的中间部分（这里为浅拷贝，内存相同）
         mvImagePyramid[level] = temp(Rect(EDGE_THRESHOLD, EDGE_THRESHOLD, sz.width, sz.height));
 
         // Compute the resized image
@@ -1676,20 +1677,20 @@ void ORBextractor::ComputePyramid(cv::Mat image)
         if( level != 0 )
         {
 			//将上一层金字塔图像根据设定sz缩放到当前层级
-            resize(mvImagePyramid[level-1],	//输入图像
+            /*resize(mvImagePyramid[level-1],	//输入图像
 				   mvImagePyramid[level], 	//输出图像
 				   sz, 						//输出图像的尺寸
 				   0, 						//水平方向上的缩放系数，留0表示自动计算
 				   0,  						//垂直方向上的缩放系数，留0表示自动计算
-				   cv::INTER_LINEAR);		//图像缩放的差值算法类型，这里的是线性插值算法
+				   cv::INTER_LINEAR);		//图像缩放的差值算法类型，这里的是线性插值算法*/
 
-            // //!  原代码mvImagePyramid 并未扩充，上面resize应该改为如下
-            // resize(image,	                //输入图像
-			// 	   mvImagePyramid[level], 	//输出图像
-			// 	   sz, 						//输出图像的尺寸
-			// 	   0, 						//水平方向上的缩放系数，留0表示自动计算
-			// 	   0,  						//垂直方向上的缩放系数，留0表示自动计算
-			// 	   cv::INTER_LINEAR);		//图像缩放的差值算法类型，这里的是线性插值算法
+             //!  原代码mvImagePyramid 并未扩充，上面resize应该改为如下
+             resize(image,	                //输入图像
+			 	   mvImagePyramid[level], 	//输出图像
+			 	   sz, 						//输出图像的尺寸
+			 	   0, 						//水平方向上的缩放系数，留0表示自动计算
+			 	   0,  						//垂直方向上的缩放系数，留0表示自动计算
+			 	   cv::INTER_LINEAR);		//图像缩放的差值算法类型，这里的是线性插值算法
 
 			//把源图像拷贝到目的图像的中央，四面填充指定的像素。图片如果已经拷贝到中间，只填充边界
 			//这样做是为了能够正确提取边界的FAST角点
@@ -1719,8 +1720,9 @@ void ORBextractor::ComputePyramid(cv::Mat image)
 						   temp, EDGE_THRESHOLD, EDGE_THRESHOLD, EDGE_THRESHOLD, EDGE_THRESHOLD,
                            BORDER_REFLECT_101);            
         }
-        // //! 原代码mvImagePyramid 并未扩充，应该添加下面一行代码
-        // mvImagePyramid[level] = temp;
+
+         //! 原代码mvImagePyramid 并未扩充，应该添加下面一行代码
+         mvImagePyramid[level] = temp;
     }
 
 }
